@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import sys
+import tempfile
 from pathlib import Path
 
 import streamlit as st
@@ -14,13 +15,22 @@ if str(SRC) not in sys.path:
 from dischem_orchestrator.agent import AgentError, explain_inventory_exception
 from dischem_orchestrator.api_data import DataServiceError, get_forecast, get_inventory_health, get_kpis_summary
 
-KPI_PATH = ROOT / "data" / "gold" / "kpi_summary.csv"
-INVENTORY_HEALTH_PATH = ROOT / "data" / "gold" / "mart_inventory_health.csv"
-FORECAST_PATH = ROOT / "data" / "gold" / "forecast_sku_store_daily.csv"
-ALERTS_PATH = ROOT / "data" / "gold" / "streaming_alerts.csv"
+DATA_GOLD_DIR = ROOT / "data" / "gold"
+DEMO_DATA_DIR = ROOT / "apps" / "dashboard" / "demo_data"
+
+def _pick_data_file(gold_name: str) -> Path:
+    prod = DATA_GOLD_DIR / gold_name
+    if prod.exists():
+        return prod
+    return DEMO_DATA_DIR / gold_name
+
+KPI_PATH = _pick_data_file("kpi_summary.csv")
+INVENTORY_HEALTH_PATH = _pick_data_file("mart_inventory_health.csv")
+FORECAST_PATH = _pick_data_file("forecast_sku_store_daily.csv")
+ALERTS_PATH = _pick_data_file("streaming_alerts.csv")
 POLICY_PATH = ROOT / "config" / "policies" / "agent_policy.json"
 PROMPT_PATH = ROOT / "config" / "prompts" / "inventory_agent_prompt.txt"
-AUDIT_LOG_PATH = ROOT / "models" / "llmops" / "agent_explanations_log.jsonl"
+AUDIT_LOG_PATH = Path(tempfile.gettempdir()) / "agent_explanations_log.jsonl"
 
 st.set_page_config(page_title="Dis-Chem Inventory Orchestrator", page_icon="📊", layout="wide")
 
@@ -115,6 +125,10 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+using_demo_data = str(DEMO_DATA_DIR) in str(KPI_PATH)
+if using_demo_data:
+    st.info("Running with bundled demo data because `data/gold` artifacts are not present in this environment.")
 
 
 def _store_options() -> list[str]:
