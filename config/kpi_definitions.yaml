@@ -1,0 +1,33 @@
+﻿version: 1
+currency: ZAR
+
+kpis:
+  working_capital_unlocked:
+    formula: baseline_inventory_value - current_inventory_value
+    owner: finance
+    grain: store_day
+
+  inventory_days:
+    formula: closing_stock_units / avg_daily_units_sold_30d
+    owner: supply_chain
+    grain: store_sku_day
+
+  stock_turn_rate:
+    formula: cogs_rolling_365 / avg_inventory_value_rolling_365
+    owner: finance
+    grain: store_sku_month
+
+  expiry_wastage_exposure:
+    formula: units_expiring_90d * unit_cost
+    owner: pharmacy_ops
+    grain: store_sku_day
+
+  reorder_risk_index:
+    formula: weighted(stockout_probability, lead_time_risk, demand_spike_score)
+    owner: supply_chain
+    grain: store_sku_day
+
+  store_service_risk:
+    formula: weighted(stockout_rate, chronic_availability_breach, schedule6_anomaly_score)
+    owner: operations
+    grain: store_day

@@ -1,0 +1,28 @@
+﻿{
+  "agent_name": "inventory_explainer_v1",
+  "version": "1.0.0",
+  "guardrails": {
+    "max_alerts_in_context": 5,
+    "max_recommendations": 3,
+    "risk_thresholds": {
+      "low": 0.45,
+      "medium": 0.65,
+      "high": 0.85
+    },
+    "disallow": [
+      "personal health information",
+      "patient identity",
+      "unverified medical diagnosis"
+    ]
+  },
+  "output_contract": {
+    "required_fields": [
+      "summary",
+      "risk_level",
+      "key_drivers",
+      "recommended_actions",
+      "confidence",
+      "signals"
+    ]
+  }
+}

@@ -1,317 +1,156 @@
 ﻿# Dis-Chem Omni-Channel Inventory Orchestrator
 
-A production-style portfolio project that demonstrates how modern data engineering, analytics, MLOps, and LLMOps can be combined to solve a high-value retail healthcare problem: inventory optimization across an omni-channel pharmacy ecosystem.
+A portfolio-grade data + AI platform simulation for executive inventory decision support in an omni-channel pharmacy and healthcare retail context.
 
-## Why this project matters
+## What This Project Delivers
 
-Dis-Chem’s strategic shift from traditional retail pharmacy toward integrated primary healthcare creates a more complex supply chain environment. Inventory decisions now affect not only store availability and working capital, but also chronic medication continuity, compliance, patient experience, and margin protection.
+- End-to-end medallion pipeline: `raw -> bronze -> silver -> gold`
+- Executive KPI layer and risk marts
+- Baseline SKU-store forecasting with backtest metrics and run registry
+- Streaming alert simulation with severity scoring
+- Governed AI inventory agent with audit logging
+- FastAPI service and Streamlit executive dashboard
+- CI smoke checks and local run scripts
 
-This project simulates an executive-grade decision intelligence platform that helps leadership answer questions such as:
-- Where is working capital trapped in excess stock?
-- Which stores are at highest risk of stock-outs or expiry losses?
-- Which SKUs need forecast-driven replenishment changes?
-- How can an AI agent explain exceptions and recommend actions clearly?
-
-## Business problem
-
-Retail healthcare inventory is difficult because it combines:
-- Regulated pharmaceutical products
-- Front-shop retail goods
-- Demand volatility across stores and channels
-- High cost of stock-outs and expired items
-- Executive pressure to improve stock turn and reduce inventory days
-
-The project addresses this through a lakehouse-based architecture, KPI-first analytics, demand forecasting, and an AI inventory copilot.
-
-## Solution overview
-
-The platform includes:
-- Batch ingestion for POS, ERP, and clinic data
-- Simulated streaming events for inventory changes and alerts
-- Medallion architecture (Bronze, Silver, Gold)
-- Executive KPI layer for working capital, stock turn, compliance, and wastage
-- Forecasting models for SKU-store demand
-- LLM-powered agent for exception reasoning and decision support
-- Streamlit dashboard for executive consumption
-
-## Architecture summary
-
-### Data sources
-- Store POS transactions
-- SAP / ERP inventory extracts
-- Clinic prescription and dispensing data
-- Synthetic streaming inventory events
-
-### Core architecture
-- **Storage:** Cloudflare R2 or local object store abstraction
-- **Metadata / state:** Cloudflare D1 or lightweight SQL alternative
-- **Compute:** DuckDB + Polars
-- **Pipelines:** Python orchestration for batch and simulated streaming
-- **ML layer:** Forecasting models with tracked experiments
-- **LLM layer:** Agent workflows for exception analysis and action recommendations
-- **Frontend:** Streamlit executive dashboard
-
-## Medallion data model
-
-### Bronze
-Raw landed data with minimal transformation.
-Examples:
-- `pos_transactions_raw`
-- `sap_inventory_levels_raw`
-- `clinic_scripts_raw`
-
-### Silver
-Standardized and cleaned operational entities.
-Examples:
-- `dim_products_hc`
-- `fct_inventory_snapshots`
-- `fct_dispensing_log`
-
-### Gold
-Business-ready marts for reporting and AI.
-Examples:
-- `mart_inventory_health`
-- `mart_financial_performance`
-- `mart_customer_behavior`
-
-## Executive KPIs
-
-The dashboard focuses on measurable business value before advanced AI:
-- Working capital unlocked
-- Inventory days
-- Stock turn rate
-- Expiry and wastage exposure
-- Schedule 6 dispensing auditability
-- Basket penetration for chronic patients
-- Reorder risk index
-- Store-level service risk
-
-## AI and advanced analytics
-
-### Forecasting
-The ML layer predicts demand at SKU-store level using historical sales, seasonality, and inventory context.
-
-### AI inventory agent
-The LLMOps layer explains anomalies such as:
-- Overstock risk
-- Stock-out risk
-- Unusual dispensing patterns
-- Margin leakage
-- Reorder exceptions
-
-The agent is designed to produce executive-friendly recommendations, not just technical output.
-
-## Project goals
-
-This repository is designed to showcase skills relevant to analytics, data engineering, platform thinking, and AI product delivery:
-- Modern data architecture design
-- Batch and streaming pipeline development
-- KPI modeling for executive reporting
-- MLOps practices for forecasting
-- LLMOps practices for governed AI agents
-- Dashboard development for business stakeholders
-- Documentation quality suitable for enterprise environments
-
-## Repository structure
+## Current Repository Layout
 
 ```text
-apps/           Frontend dashboard and API services
-config/         Metrics, policies, settings, and data contracts
-data/           Raw, bronze, silver, gold, and synthetic datasets
-docs/           Business, architecture, runbooks, and operating documentation
-infra/          Infrastructure-as-code, Docker, and cloud setup
-models/         Model artifacts, prompt versions, and registry metadata
-notebooks/      Exploration and model development notebooks
-orchestration/  Batch and streaming workflows
-sql/            SQL transformations and marts
-src/            Core Python package for ingestion, transforms, ML, and agents
-tests/          Unit, integration, data quality, and smoke tests
+apps/
+  api/                  FastAPI app (`/health`, `/kpis`, `/inventory/health`, `/forecast`, `/agent/explain`)
+  dashboard/            Streamlit executive dashboard
+config/
+  data_contracts.yaml   Bronze contracts
+  kpi_definitions.yaml  KPI definitions
+  policies/             Agent guardrails/policies
+  prompts/              Agent prompt templates
+data/
+  raw/                  Synthetic source datasets (generated)
+  bronze/               Ingested raw layer
+  silver/               Standardized entities/facts
+  gold/                 Executive marts, KPIs, forecasts, streaming alerts
+models/
+  forecasting/          Forecast run metrics + registry
+  llmops/               Agent explanation audit logs
+orchestration/
+  batch/                Batch jobs (ingest/build/train/agent)
+  streaming/            Streaming simulator
+scripts/
+  seed_data.py          Synthetic data generation
+  smoke_api.py          API smoke checks
+  smoke_artifacts.py    Artifact availability checks
+  start_app.ps1         Launch API + dashboard together
+src/dischem_orchestrator/
+  ingestion.py          Bronze ingestion logic
+  silver.py             Silver transformations
+  gold.py               Gold marts + KPI summary
+  forecasting.py        Baseline forecasting + backtest
+  streaming.py          Alert simulation
+  agent.py              Governed agent reasoning + audit logs
+tests/
+  unit/                 Unit tests
+  integration/          Pipeline/service integration tests
 ```
 
-## Recommended tech stack
+## Quick Start (Windows PowerShell)
 
-- Python
-- DuckDB
-- Polars
-- Pandas
-- Streamlit
-- FastAPI
-- Great Expectations or Soda for data quality
-- MLflow for experiment tracking
-- Evidently for model monitoring
-- LiteLLM / OpenAI-compatible layer or Workers AI integration
-- Docker
-- GitHub Actions
+### 1. Create and activate environment
 
-## Getting started
-
-### 1. Clone the repo
-
-```bash
-git clone https://github.com/your-username/dischem-omni-channel-inventory-orchestrator.git
-cd dischem-omni-channel-inventory-orchestrator
-```
-
-### 2. Create environment
-
-```bash
+```powershell
 python -m venv .venv
-source .venv/bin/activate
-# Windows PowerShell: .venv\\Scripts\\Activate.ps1
-pip install -U pip
-pip install -r apps/dashboard/requirements.txt
-pip install -r apps/api/requirements.txt
+. .\.venv\Scripts\Activate.ps1
 ```
 
-### 3. Configure environment variables
+### 2. Install dependencies
 
-```bash
-cp .env.example .env
+```powershell
+python -m pip install -U pip
+python -m pip install -r apps/api/requirements.txt
+python -m pip install -r apps/dashboard/requirements.txt
+python -m pip install -r requirements-dev.txt
 ```
 
-Populate values for storage, model endpoints, and dashboard settings.
+### 3. Generate 1-year synthetic data
 
-### 4. Seed demo data
-
-```bash
-python scripts/seed_data.py
+```powershell
+python scripts/seed_data.py --start-date 2025-01-01 --days 365 --stores 25 --skus 600 --seed 42
 ```
 
-### 5. Run batch pipeline
+### 4. Run batch pipeline
 
-```bash
+```powershell
 python orchestration/batch/ingest_pos.py
 python orchestration/batch/ingest_sap.py
 python orchestration/batch/ingest_clinic.py
+python orchestration/batch/build_silver.py
 python orchestration/batch/build_gold.py
+```
+
+### 5. Train forecast baseline
+
+```powershell
+python orchestration/batch/train_forecast.py --horizon-days 30 --holdout-days 28 --window-days 7
 ```
 
 ### 6. Run streaming simulator
 
-```bash
+```powershell
 python orchestration/streaming/simulator.py
 ```
 
-### 7. Launch dashboard
+### 7. Run AI agent explanation (example)
 
-```bash
+```powershell
+python orchestration/batch/run_agent_explain.py --date 2025-01-01 --store-id ST001
+```
+
+## Run the App
+
+### Option A: Launch both together
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/start_app.ps1
+```
+
+- API docs: `http://127.0.0.1:8000/docs`
+- Dashboard: `http://127.0.0.1:8501`
+
+### Option B: Run separately
+
+```powershell
+uvicorn apps.api.main:app --reload --port 8000
 streamlit run apps/dashboard/streamlit_app.py
 ```
 
-## Example user stories
+## API Endpoints
 
-- As a CFO, I want to see trapped working capital by store so that I can prioritize inventory reduction.
-- As a supply chain leader, I want to identify high-risk stock-out zones before service levels drop.
-- As a pharmacy operations manager, I want auditable Schedule 6 movement reporting.
-- As an executive, I want an AI assistant that explains why inventory exceptions matter and what action to take.
+- `GET /health`
+- `GET /kpis?date=YYYY-MM-DD&store_id=ST001`
+- `GET /inventory/health?date=YYYY-MM-DD&store_id=ST001&limit=200`
+- `GET /forecast?store_id=ST001&sku_id=SKU00001&limit=500`
+- `POST /agent/explain`
 
-## MLOps scope
+Example payload:
 
-The project includes a lightweight but realistic MLOps lifecycle:
+```json
+{
+  "date": "2025-01-01",
+  "store_id": "ST001",
+  "sku_id": "SKU00001"
+}
+```
 
-- Feature generation
-- Baseline forecasting model
-- Experiment tracking
-- Model artifact storage
-- Evaluation metrics
-- Re-training hooks
-- Monitoring placeholders
+## Validation / Smoke Checks
 
-## LLMOps scope
+```powershell
+python scripts/smoke_artifacts.py
+python scripts/smoke_api.py
+```
 
-The project also demonstrates practical LLMOps patterns:
+## Notes
 
-- Prompt versioning
-- Guardrails and policy config
-- Retrieval-ready business context
-- Reason logging for exceptions
-- Human-readable summaries for executives
-- Traceability of recommendations
-
-## Testing and quality
-
-The repository supports:
-
-- Unit tests for transformations and metrics
-- Integration tests for pipeline flow
-- Data quality checks for schema and freshness
-- Smoke tests for dashboard and API startup
-- CI workflows for linting, tests, and docs validation
-
-## Documentation strategy
-
-This repository is intentionally documentation-heavy to mirror enterprise delivery standards. The `docs/` folder should contain:
-
-- Architecture decisions
-- KPI definitions
-- Data contracts
-- Security and POPIA notes
-- Operating runbooks
-- Demo walkthrough instructions
-- Screenshots of dashboards
-
-## Portfolio value
-
-This is not just a coding project. It is a business-facing analytics product that demonstrates the ability to:
-
-- Translate strategy into data products
-- Build executive-grade reporting layers
-- Design scalable pipelines
-- Apply AI responsibly in a regulated industry
-- Communicate clearly with both technical and non-technical stakeholders
-
-## Roadmap
-
-### Phase 1
-
-- Build synthetic datasets
-- Implement Bronze to Gold pipeline
-- Deliver initial executive dashboard
-
-### Phase 2
-
-- Add demand forecasting and model tracking
-- Add simulated streaming events and alerts
-- Improve KPI drilldowns
-
-### Phase 3
-
-- Add AI inventory agent
-- Add governance logs and exception audit trail
-- Add scenario simulation features
-
-### Phase 4
-
-- Containerize services
-- Add CI/CD and deployment automation
-- Publish architecture diagrams and demo video
-
-## Suggested screenshots for the repo
-
-Add these visuals to improve recruiter and hiring manager impact:
-
-- Executive dashboard landing page
-- Inventory health deep-dive page
-- Forecasting page
-- AI agent explanation panel
-- Architecture diagram
-- Medallion data flow diagram
-
-## Contribution guide
-
-1. Create a feature branch
-2. Commit logically and clearly
-3. Add tests for all important logic
-4. Update docs for any architecture or KPI changes
-5. Open a pull request using the template
+- Generated datasets and model run artifacts are reproducible and ignored by default via `.gitignore`.
+- If local Windows temp folders become lock-protected, they are safely ignored and do not affect pipeline execution.
 
 ## License
 
-Use MIT for portfolio simplicity unless you want to keep the repository private or more restricted.
-
-## Author positioning statement
-
-This project was developed as a portfolio-grade demonstration of executive analytics, healthcare retail inventory intelligence, and agentic AI system design using open-source tools and cloud-native patterns.
-
----
-
+Use MIT for portfolio simplicity unless you plan to keep the repository private or more restricted.

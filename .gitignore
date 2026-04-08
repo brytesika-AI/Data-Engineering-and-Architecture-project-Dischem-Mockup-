@@ -1,2 +1,32 @@
 git-meta/
 .git/
+
+# Python / venv
+.venv/
+__pycache__/
+*.py[cod]
+
+# Local temp / pytest cache artifacts (Windows lock-prone)
+.tmp/
+.tmp2/
+tmp*/
+pytest-cache-files-*/
+
+# Build / runtime noise
+*.log
+
+# Generated data artifacts (reproducible via scripts)
+data/raw/*.csv
+data/bronze/*.csv
+data/silver/*.csv
+data/gold/*.csv
+data/silver/_quality_report.json
+data/gold/_quality_report.json
+data/gold/streaming_alerts_quality.json
+!data/bronze/_ingestion_log.jsonl
+
+# Model artifacts / run outputs
+models/forecasting/runs/
+models/forecasting/metrics_latest.json
+models/forecasting/registry.json
+models/llmops/*.jsonl

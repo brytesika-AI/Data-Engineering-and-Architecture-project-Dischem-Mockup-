@@ -1,0 +1,88 @@
+﻿version: 1
+owner: data-platform
+
+contracts:
+  pos_transactions_raw:
+    description: Transaction-level POS sales events.
+    grain: transaction_line_id
+    freshness: daily
+    required_columns:
+      - transaction_line_id
+      - transaction_ts
+      - date
+      - store_id
+      - sku_id
+      - quantity
+      - unit_price
+      - discount_amount
+      - net_sales_amount
+      - channel
+      - payment_type
+    constraints:
+      transaction_line_id: unique_not_null
+      quantity: '>= 1'
+      unit_price: '> 0'
+      net_sales_amount: '>= 0'
+      channel: in[store,online,clinic_pickup]
+
+  sap_inventory_levels_raw:
+    description: Daily inventory and replenishment snapshot from ERP.
+    grain: date_store_id_sku_id
+    freshness: daily
+    required_columns:
+      - snapshot_id
+      - date
+      - store_id
+      - sku_id
+      - opening_stock_units
+      - receipts_units
+      - closing_stock_units
+      - reorder_point_units
+      - lead_time_days
+      - unit_cost
+      - expiry_date
+      - is_controlled_substance
+    constraints:
+      snapshot_id: unique_not_null
+      opening_stock_units: '>= 0'
+      closing_stock_units: '>= 0'
+      unit_cost: '> 0'
+
+  clinic_scripts_raw:
+    description: Clinic scripts and dispensing events.
+    grain: script_line_id
+    freshness: daily
+    required_columns:
+      - script_line_id
+      - script_ts
+      - date
+      - clinic_id
+      - store_id
+      - patient_segment
+      - sku_id
+      - quantity_dispensed
+      - diagnosis_group
+      - is_schedule_6
+    constraints:
+      script_line_id: unique_not_null
+      quantity_dispensed: '>= 1'
+      patient_segment: in[chronic,acute]
+
+  streaming_inventory_events_raw:
+    description: Simulated near-real-time inventory change and alert events.
+    grain: event_id
+    freshness: intra_day
+    required_columns:
+      - event_id
+      - event_ts
+      - date
+      - store_id
+      - sku_id
+      - event_type
+      - delta_units
+      - resulting_stock_units
+      - risk_score
+    constraints:
+      event_id: unique_not_null
+      event_type: in[stock_adjustment,stockout_risk,overstock_risk,expiry_risk,reorder_trigger]
+      risk_score: 'between 0 and 1'
